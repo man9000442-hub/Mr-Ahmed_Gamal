@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mr Ahmed Gamal - Quiz</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+
+  <!-- ✅ الهيدر الكيرفي -->
+  <div class="bg-gradient-to-r from-purple-600 to-blue-500 text-center w-full max-w-3xl mt-6 p-6 rounded-3xl shadow-lg">
+    <h1 class="text-3xl font-bold">Mr Ahmed Gamal</h1>
+    <p class="text-xl mt-2">Quiz</p>
+  </div>
+
+  <!-- ✅ اختيار الصف -->
+  <div id="classSelection" class="text-center mt-10">
+    <h2 class="text-2xl font-bold mb-4">اختر الصف الدراسي</h2>
+    <select id="classSelect" class="text-black p-2 rounded">
+      <option value="">-- اختر الصف --</option>
+      <option value="g1">أولى إعدادي</option>
+      <option value="g2">تانية إعدادي</option>
+      <option value="g3">تالتة إعدادي</option>
+      <option value="s1">أولى ثانوي</option>
+      <option value="s2">تانية ثانوي</option>
+      <option value="s3">تالتة ثانوي</option>
+    </select>
+    <button id="startBtn" class="bg-blue-600 px-4 py-2 rounded ml-2">ابدأ</button>
+  </div>
+
+  <!-- ✅ الكويز -->
+  <div id="quizSection" class="hidden w-full max-w-3xl mt-10">
+    <div class="mb-4">
+      <input id="studentName" placeholder="الاسم" class="p-2 text-black rounded w-1/2 mb-2"><br>
+      <input id="studentPhone" placeholder="رقم التليفون" class="p-2 text-black rounded w-1/2">
+    </div>
+    <form id="quizForm" class="space-y-4"></form>
+    <button id="submitBtn" class="bg-green-600 px-4 py-2 rounded mt-4">إرسال</button>
+    <div id="result" class="mt-6 text-xl font-bold"></div>
+  </div>
+
+  <!-- ✅ زر واتساب المستر -->
+  <a href="https://wa.me/201225580865" target="_blank" class="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-full shadow-lg transition transform hover:scale-105">
+    💬 تواصل مع Mr Ahmed Gamal
+  </a>
+  <!-- ✅ الفوتر الأسود (كيرفي) -->
+<a href="https://wa.me/201000000000" target="_blank" class="w-full flex flex-col items-center justify-center text-center mt-10 mb-4">
+  <div class="bg-black text-white py-4 px-6 rounded-3xl shadow-lg w-64 hover:bg-gray-800 transition cursor-pointer">
+    <p class="font-bold text-lg">صُمم بواسطة Boda</p>
+    <p class="text-sm text-gray-300 mt-1">انقر للتواصل</p>
+  </div>
+</a>
+  <script>
+    const scriptURL = "https://script.google.com/macros/s/AKfycbyFoEanI6M6--5RTelDZrRrCH_Xs-rfRvJ3h_OIqJeoWy9I_Up1c4Qivw2Q8lR4WKZ3/exec";
+
+    let questions = [];
+    let correctAnswers = {};
+    let explanations = {};
+    let selectedClass = "";
+
+    const classNames = {
+      g1: "أولى إعدادي",
+      g2: "تانية إعدادي",
+      g3: "تالتة إعدادي",
+      s1: "أولى ثانوي",
+      s2: "تانية ثانوي",
+      s3: "تالتة ثانوي"
+    };
+
+    document.getElementById("startBtn").addEventListener("click", async () => {
+      selectedClass = document.getElementById("classSelect").value;
+      if (!selectedClass) return alert("من فضلك اختر الصف الدراسي");
+
+      const qSheet = `questions_${selectedClass}`;
+
+      let res = await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+          type: "getQuestions",
+          classSheet: qSheet
+        })
+      });
+
+      questions = await res.json();
+      showQuestions();
+      document.getElementById("classSelection").classList.add("hidden");
+      document.getElementById("quizSection").classList.remove("hidden");
+    });
+
+    function showQuestions() {
+      const form = document.getElementById("quizForm");
+      form.innerHTML = "";
+      questions.forEach(q => {
+        correctAnswers[q.id] = q.correct;
+        explanations[q.id] = q.explanation;
+
+        let html = `
+          <div class="card bg-gray-800 p-4 rounded-xl">
+            <p class="font-bold mb-2">${q.question}</p>
+            ${q.choices.map(c => `
+              <label class="block"><input type="radio" name="${q.id}" value="${c}"> ${c}</label>
+            `).join("")}
+          </div>
+        `;
+        form.innerHTML += html;
+      });
+    }
+
+    document.getElementById("submitBtn").addEventListener("click", async (e) => {
+      e.preventDefault();
+      const name = document.getElementById("studentName").value.trim();
+      const phone = document.getElementById("studentPhone").value.trim();
+      if (!name || !phone) return alert("من فضلك اكتب الاسم ورقم التليفون");
+
+      let score = 0, wrong = [], total = questions.length;
+      questions.forEach(q => {
+        const selected = document.querySelector(`input[name="${q.id}"]:checked`);
+        const card = document.querySelector(`input[name="${q.id}"]`).closest(".card");
+        const all = document.querySelectorAll(`input[name="${q.id}"]`);
+
+        all.forEach(opt => {
+          let label = opt.parentElement;
+          label.style.color = "#fff";
+          if (opt.value === q.correct) label.style.color = "lightgreen";
+          if (selected && opt === selected && selected.value !== q.correct) label.style.color = "red";
+        });
+
+        if (selected && selected.value === q.correct) score++;
+        else {
+          wrong.push(q.id);
+          const exp = document.createElement("div");
+          exp.classList.add("explanation");
+          exp.style.color = "#ffeb3b";
+          exp.style.marginTop = "5px";
+          exp.innerHTML = `<b>الشرح:</b> ${q.explanation}`;
+          card.appendChild(exp);
+        }
+      });
+
+      document.getElementById("result").innerHTML = `✅ نتيجتك: ${score} / ${total}`;
+
+      await fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify({
+          type: "saveResult",
+          className: classNames[selectedClass],
+          name, phone, score, total, wrong
+        })
+      });
+    });
+  </script>
+</body>
+</html>
