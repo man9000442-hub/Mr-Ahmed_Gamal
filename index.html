@@ -5,19 +5,73 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mr Ahmed Gamal - Quiz</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Cairo', sans-serif;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .fade-in {
+      animation: fadeIn 0.5s ease-out forwards;
+    }
+    .card label {
+      transition: all 0.2s ease-in-out;
+      cursor: pointer;
+      display: block;
+      padding: 0.75rem;
+      border-radius: 0.5rem;
+      background-color: #4A5568; /* gray-700 */
+      margin-bottom: 0.5rem;
+      border: 2px solid transparent;
+    }
+    .card label:hover {
+      background-color: #2D3748; /* gray-800 */
+      border-color: #6366F1; /* indigo-500 */
+    }
+    .card input[type="radio"] {
+      display: none;
+    }
+    .selected-answer {
+      background-color: #4338CA !important; /* indigo-700 */
+      border-color: #A5B4FC !important; /* indigo-300 */
+      color: white;
+    }
+    .correct-answer {
+      background-color: #16A34A !important; /* green-600 */
+      color: white !important;
+      border-color: #4ADE80 !important; /* green-400 */
+    }
+    .incorrect-answer {
+      background-color: #DC2626 !important; /* red-600 */
+      color: white !important;
+      border-color: #F87171 !important; /* red-400 */
+    }
+    .explanation {
+      background-color: #1f2937;
+      padding: 10px;
+      border-radius: 8px;
+      margin-top: 10px;
+      border-left: 4px solid #facc15; /* yellow-400 */
+      color: #fde047; /* yellow-300 */
+      animation: fadeIn 0.5s;
+    }
+  </style>
 </head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center">
+<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 sm:p-6">
 
-  <!-- ✅ الهيدر الكيرفي -->
-  <div class="bg-gradient-to-r from-purple-600 to-blue-500 text-center w-full max-w-3xl mt-6 p-6 rounded-3xl shadow-lg">
-    <h1 class="text-3xl font-bold">Mr Ahmed Gamal</h1>
-    <p class="text-xl mt-2">Quiz</p>
-  </div>
+  <header class="w-full max-w-4xl text-center bg-gradient-to-r from-purple-600 to-blue-500 p-6 rounded-3xl shadow-2xl mb-8 fade-in">
+    <h1 class="text-4xl font-bold">Mr Ahmed Gamal</h1>
+    <p class="text-xl mt-2 opacity-90">Quiz</p>
+  </header>
 
-  <!-- ✅ اختيار الصف -->
-  <div id="classSelection" class="text-center mt-10">
-    <h2 class="text-2xl font-bold mb-4">اختر الصف الدراسي</h2>
-    <select id="classSelect" class="text-black p-2 rounded">
+  <main id="classSelection" class="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg text-center fade-in">
+    <h2 class="text-2xl font-bold mb-6 text-gray-100">اختر الصف الدراسي</h2>
+    <select id="classSelect" class="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:outline-none focus:border-blue-500 transition">
       <option value="">-- اختر الصف --</option>
       <option value="g1">أولى إعدادي</option>
       <option value="g2">تانية إعدادي</option>
@@ -26,31 +80,35 @@
       <option value="s2">تانية ثانوي</option>
       <option value="s3">تالتة ثانوي</option>
     </select>
-    <button id="startBtn" class="bg-blue-600 px-4 py-2 rounded ml-2">ابدأ</button>
-  </div>
+    <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mt-6 transition transform hover:scale-105 shadow-lg">
+      ابدأ الاختبار
+    </button>
+  </main>
 
-  <!-- ✅ الكويز -->
-  <div id="quizSection" class="hidden w-full max-w-3xl mt-10">
-    <div class="mb-4">
-      <input id="studentName" placeholder="الاسم" class="p-2 text-black rounded w-1/2 mb-2"><br>
-      <input id="studentPhone" placeholder="رقم التليفون" class="p-2 text-black rounded w-1/2">
+  <section id="quizSection" class="hidden w-full max-w-4xl mt-8 fade-in">
+    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-6">
+      <input id="studentName" placeholder="اكتب اسمك هنا" class="w-full p-3 bg-gray-700 text-white rounded-lg border-2 border-gray-600 focus:outline-none focus:border-purple-500 transition mb-4" required>
+      <input id="studentPhone" placeholder="اكتب رقم تليفونك هنا" class="w-full p-3 bg-gray-700 text-white rounded-lg border-2 border-gray-600 focus:outline-none focus:border-purple-500 transition" required>
     </div>
-    <form id="quizForm" class="space-y-4"></form>
-    <button id="submitBtn" class="bg-green-600 px-4 py-2 rounded mt-4">إرسال</button>
-    <div id="result" class="mt-6 text-xl font-bold"></div>
-  </div>
+    <form id="quizForm" class="space-y-6"></form>
+    <div id="result" class="mt-6 text-2xl font-bold text-center p-4 bg-gray-800 rounded-2xl shadow-lg hidden"></div>
+    <button id="submitBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg mt-6 transition transform hover:scale-105 shadow-lg">
+      إرسال الإجابات
+    </button>
+  </section>
 
-  <!-- ✅ زر واتساب المستر -->
-  <a href="https://wa.me/201225580865" target="_blank" class="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-full shadow-lg transition transform hover:scale-105">
-    💬 تواصل مع Mr Ahmed Gamal
+  <a href="https://wa.me/201225580865" target="_blank" class="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-full shadow-lg transition transform hover:scale-110 z-50 flex items-center space-x-2">
+    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM2 10a8 8 0 1116 0 8 8 0 01-16 0zm10.293-3.293a1 1 0 00-1.414 0L9 8.586 7.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l3-3a1 1 0 000-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+    <span>تواصل مع المستر</span>
   </a>
-  <!-- ✅ الفوتر الأسود (كيرفي) -->
-<a href="https://wa.me/201094724932" target="_blank" class="w-full flex flex-col items-center justify-center text-center mt-10 mb-4">
-  <div class="bg-black text-white py-4 px-6 rounded-3xl shadow-lg w-64 hover:bg-gray-800 transition cursor-pointer">
-    <p class="font-bold text-lg">صُمم بواسطة Boda</p>
-    <p class="text-sm text-gray-300 mt-1">انقر للتواصل</p>
-  </div>
-</a>
+  
+  <footer class="w-full max-w-xs text-center mt-12 mb-4 fade-in">
+    <a href="https://wa.me/201094724932" target="_blank" class="block bg-black text-white py-4 px-6 rounded-2xl shadow-lg hover:bg-gray-800 transition cursor-pointer">
+      <p class="font-bold text-lg">صُمم بواسطة Boda</p>
+      <p class="text-sm text-gray-400 mt-1">انقر للتواصل</p>
+    </a>
+  </footer>
+
   <script>
     const scriptURL = "https://script.google.com/macros/s/AKfycbyFoEanI6M6--5RTelDZrRrCH_Xs-rfRvJ3h_OIqJeoWy9I_Up1c4Qivw2Q8lR4WKZ3/exec";
 
@@ -60,50 +118,68 @@
     let selectedClass = "";
 
     const classNames = {
-      g1: "أولى إعدادي",
-      g2: "تانية إعدادي",
-      g3: "تالتة إعدادي",
-      s1: "أولى ثانوي",
-      s2: "تانية ثانوي",
-      s3: "تالتة ثانوي"
+      g1: "أولى إعدادي", g2: "تانية إعدادي", g3: "تالتة إعدادي",
+      s1: "أولى ثانوي", s2: "تانية ثانوي", s3: "تالتة ثانوي"
     };
 
     document.getElementById("startBtn").addEventListener("click", async () => {
       selectedClass = document.getElementById("classSelect").value;
-      if (!selectedClass) return alert("من فضلك اختر الصف الدراسي");
+      if (!selectedClass) {
+        alert("من فضلك اختر الصف الدراسي أولاً");
+        return;
+      }
 
-      const qSheet = `questions_${selectedClass}`;
+      document.getElementById("startBtn").textContent = "جاري تحميل الأسئلة...";
+      document.getElementById("startBtn").disabled = true;
 
-      let res = await fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify({
-          type: "getQuestions",
-          classSheet: qSheet
-        })
-      });
-
-      questions = await res.json();
-      showQuestions();
-      document.getElementById("classSelection").classList.add("hidden");
-      document.getElementById("quizSection").classList.remove("hidden");
+      try {
+        let res = await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({ type: "getQuestions", classSheet: `questions_${selectedClass}` })
+        });
+        questions = await res.json();
+        showQuestions();
+        document.getElementById("classSelection").classList.add("hidden");
+        document.getElementById("quizSection").classList.remove("hidden");
+      } catch (error) {
+        alert("حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.");
+        document.getElementById("startBtn").textContent = "ابدأ الاختبار";
+        document.getElementById("startBtn").disabled = false;
+      }
     });
 
     function showQuestions() {
       const form = document.getElementById("quizForm");
       form.innerHTML = "";
-      questions.forEach(q => {
+      questions.forEach((q, index) => {
         correctAnswers[q.id] = q.correct;
         explanations[q.id] = q.explanation;
 
+        let choicesHtml = q.choices.map(c => `
+          <label>
+            <input type="radio" name="${q.id}" value="${c}">
+            <span>${c}</span>
+          </label>
+        `).join("");
+
         let html = `
-          <div class="card bg-gray-800 p-4 rounded-xl">
-            <p class="font-bold mb-2">${q.question}</p>
-            ${q.choices.map(c => `
-              <label class="block"><input type="radio" name="${q.id}" value="${c}"> ${c}</label>
-            `).join("")}
+          <div class="card bg-gray-800 p-5 rounded-2xl shadow-md fade-in" style="animation-delay: ${index * 100}ms;">
+            <p class="font-bold text-lg mb-4">${index + 1}. ${q.question}</p>
+            <div class="choices space-y-2">${choicesHtml}</div>
           </div>
         `;
         form.innerHTML += html;
+      });
+      
+      // Add event listener for selecting answers
+      form.querySelectorAll('input[type="radio"]').forEach(radio => {
+        radio.addEventListener('change', (event) => {
+          // Remove selection from siblings
+          const parent = event.target.closest('.choices');
+          parent.querySelectorAll('label').forEach(label => label.classList.remove('selected-answer'));
+          // Add selection to current
+          event.target.parentElement.classList.add('selected-answer');
+        });
       });
     }
 
@@ -111,43 +187,71 @@
       e.preventDefault();
       const name = document.getElementById("studentName").value.trim();
       const phone = document.getElementById("studentPhone").value.trim();
-      if (!name || !phone) return alert("من فضلك اكتب الاسم ورقم التليفون");
+      if (!name || !phone) {
+        alert("من فضلك اكتب الاسم ورقم التليفون للمتابعة");
+        return;
+      }
+
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("submitBtn").textContent = "جاري التصحيح...";
 
       let score = 0, wrong = [], total = questions.length;
       questions.forEach(q => {
-        const selected = document.querySelector(`input[name="${q.id}"]:checked`);
-        const card = document.querySelector(`input[name="${q.id}"]`).closest(".card");
-        const all = document.querySelectorAll(`input[name="${q.id}"]`);
-
-        all.forEach(opt => {
-          let label = opt.parentElement;
-          label.style.color = "#fff";
-          if (opt.value === q.correct) label.style.color = "lightgreen";
-          if (selected && opt === selected && selected.value !== q.correct) label.style.color = "red";
+        const selectedRadio = document.querySelector(`input[name="${q.id}"]:checked`);
+        const card = selectedRadio ? selectedRadio.closest(".card") : document.querySelector(`input[name="${q.id}"]`).closest('.card');
+        
+        document.querySelectorAll(`input[name="${q.id}"]`).forEach(opt => {
+          const label = opt.parentElement;
+          label.classList.remove('selected-answer'); // Clear selection style
+          if (opt.value === q.correct) {
+            label.classList.add('correct-answer');
+          }
         });
 
-        if (selected && selected.value === q.correct) score++;
-        else {
-          wrong.push(q.id);
-          const exp = document.createElement("div");
-          exp.classList.add("explanation");
-          exp.style.color = "#ffeb3b";
-          exp.style.marginTop = "5px";
-          exp.innerHTML = `<b>الشرح:</b> ${q.explanation}`;
-          card.appendChild(exp);
+        if (selectedRadio) {
+          const selectedLabel = selectedRadio.parentElement;
+          if (selectedRadio.value === q.correct) {
+            score++;
+          } else {
+            selectedLabel.classList.add('incorrect-answer');
+            wrong.push(q.id);
+            if (q.explanation) {
+              const exp = document.createElement("div");
+              exp.className = "explanation";
+              exp.innerHTML = `<b>💡 الشرح:</b> ${q.explanation}`;
+              card.appendChild(exp);
+            }
+          }
+        } else {
+            wrong.push(q.id);
+             if (q.explanation) {
+              const exp = document.createElement("div");
+              exp.className = "explanation";
+              exp.innerHTML = `<b>💡 الشرح:</b> ${q.explanation}`;
+              card.appendChild(exp);
+            }
         }
       });
 
-      document.getElementById("result").innerHTML = `✅ نتيجتك: ${score} / ${total}`;
+      const resultDiv = document.getElementById("result");
+      resultDiv.innerHTML = `✅ نتيجتك النهائية: ${score} / ${total}`;
+      resultDiv.classList.remove('hidden');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
 
-      await fetch(scriptURL, {
-        method: "POST",
-        body: JSON.stringify({
-          type: "saveResult",
-          className: classNames[selectedClass],
-          name, phone, score, total, wrong
-        })
-      });
+      document.getElementById("submitBtn").style.display = 'none';
+
+      try {
+        await fetch(scriptURL, {
+          method: "POST",
+          body: JSON.stringify({
+            type: "saveResult",
+            className: classNames[selectedClass],
+            name, phone, score, total, wrong: JSON.stringify(wrong)
+          })
+        });
+      } catch (error) {
+        console.error('Failed to save result:', error);
+      }
     });
   </script>
 </body>
