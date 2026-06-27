@@ -1,258 +1,1017 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mr Ahmed Gamal - Quiz</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    body {
-      font-family: 'Cairo', sans-serif;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(-10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in {
-      animation: fadeIn 0.5s ease-out forwards;
-    }
-    .card label {
-      transition: all 0.2s ease-in-out;
-      cursor: pointer;
-      display: block;
-      padding: 0.75rem;
-      border-radius: 0.5rem;
-      background-color: #4A5568; /* gray-700 */
-      margin-bottom: 0.5rem;
-      border: 2px solid transparent;
-    }
-    .card label:hover {
-      background-color: #2D3748; /* gray-800 */
-      border-color: #6366F1; /* indigo-500 */
-    }
-    .card input[type="radio"] {
-      display: none;
-    }
-    .selected-answer {
-      background-color: #4338CA !important; /* indigo-700 */
-      border-color: #A5B4FC !important; /* indigo-300 */
-      color: white;
-    }
-    .correct-answer {
-      background-color: #16A34A !important; /* green-600 */
-      color: white !important;
-      border-color: #4ADE80 !important; /* green-400 */
-    }
-    .incorrect-answer {
-      background-color: #DC2626 !important; /* red-600 */
-      color: white !important;
-      border-color: #F87171 !important; /* red-400 */
-    }
-    .explanation {
-      background-color: #1f2937;
-      padding: 10px;
-      border-radius: 8px;
-      margin-top: 10px;
-      border-left: 4px solid #facc15; /* yellow-400 */
-      color: #fde047; /* yellow-300 */
-      animation: fadeIn 0.5s;
-    }
-  </style>
-</head>
-<body class="bg-gray-900 text-white min-h-screen flex flex-col items-center p-4 sm:p-6">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mr. Ahmed Jamal | English Avenger</title>
 
-  <header class="w-full max-w-4xl text-center bg-gradient-to-r from-purple-600 to-blue-500 p-6 rounded-3xl shadow-2xl mb-8 fade-in">
-    <h1 class="text-4xl font-bold">Mr Ahmed Gamal</h1>
-    <p class="text-xl mt-2 opacity-90">Quiz</p>
-  </header>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&family=Bangers&display=swap"
+        rel="stylesheet">
 
-  <main id="classSelection" class="w-full max-w-md bg-gray-800 p-8 rounded-2xl shadow-lg text-center fade-in">
-    <h2 class="text-2xl font-bold mb-6 text-gray-100">اختر الصف الدراسي</h2>
-    <select id="classSelect" class="w-full bg-gray-700 text-white p-3 rounded-lg border-2 border-gray-600 focus:outline-none focus:border-blue-500 transition">
-      <option value="">-- اختر الصف --</option>
-      <option value="g1">أولى إعدادي</option>
-      <option value="g2">تانية إعدادي</option>
-      <option value="g3">تالتة إعدادي</option>
-      <option value="s1">أولى ثانوي</option>
-      <option value="s2">تانية ثانوي</option>
-      <option value="s3">تالتة ثانوي</option>
-    </select>
-    <button id="startBtn" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg mt-6 transition transform hover:scale-105 shadow-lg">
-      ابدأ الاختبار
-    </button>
-  </main>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
-  <section id="quizSection" class="hidden w-full max-w-4xl mt-8 fade-in">
-    <div class="bg-gray-800 p-6 rounded-2xl shadow-lg mb-6">
-      <input id="studentName" placeholder="اكتب اسمك هنا" class="w-full p-3 bg-gray-700 text-white rounded-lg border-2 border-gray-600 focus:outline-none focus:border-purple-500 transition mb-4" required>
-      <input id="studentPhone" placeholder="اكتب رقم تليفونك هنا" class="w-full p-3 bg-gray-700 text-white rounded-lg border-2 border-gray-600 focus:outline-none focus:border-purple-500 transition" required>
-    </div>
-    <form id="quizForm" class="space-y-6"></form>
-    <div id="result" class="mt-6 text-2xl font-bold text-center p-4 bg-gray-800 rounded-2xl shadow-lg hidden"></div>
-    <button id="submitBtn" class="w-full bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-4 rounded-lg mt-6 transition transform hover:scale-105 shadow-lg">
-      إرسال الإجابات
-    </button>
-  </section>
+    <style>
+        :root {
+            --marvel-red: #e23636;
+            --spidey-blue: #2f3ab2;
+            --dark-hero: #0a0a0a;
+            --accent-gold: #f3bc2c;
+        }
 
-  <a href="https://wa.me/201225580865" target="_blank" class="fixed bottom-6 right-6 bg-green-600 hover:bg-green-700 text-white px-5 py-3 rounded-full shadow-lg transition transform hover:scale-110 z-50 flex items-center space-x-2">
-    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a8 8 0 100 16 8 8 0 000-16zM2 10a8 8 0 1116 0 8 8 0 01-16 0zm10.293-3.293a1 1 0 00-1.414 0L9 8.586 7.707 7.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l3-3a1 1 0 000-1.414z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
-    <span>تواصل مع المستر</span>
-  </a>
-  
-  <footer class="w-full max-w-xs text-center mt-12 mb-4 fade-in">
-    <a href="https://wa.me/201094724932" target="_blank" class="block bg-black text-white py-4 px-6 rounded-2xl shadow-lg hover:bg-gray-800 transition cursor-pointer">
-      <p class="font-bold text-lg">صُمم بواسطة Boda</p>
-      <p class="text-sm text-gray-400 mt-1">انقر للتواصل</p>
-    </a>
-  </footer>
+        body {
+            font-family: 'Cairo', sans-serif;
+            background-color: var(--dark-hero);
+            color: #fff;
+            overflow-x: hidden;
+            background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.05) 1px, transparent 0);
+            background-size: 30px 30px;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-  <script>
-    const scriptURL = "https://script.google.com/macros/s/AKfycbyFoEanI6M6--5RTelDZrRrCH_Xs-rfRvJ3h_OIqJeoWy9I_Up1c4Qivw2Q8lR4WKZ3/exec";
+        .marvel-font {
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+        }
 
-    let questions = [];
-    let correctAnswers = {};
-    let explanations = {};
-    let selectedClass = "";
+        /* شاشة التحميل */
+        #loading-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--marvel-red);
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.6s ease;
+        }
 
-    const classNames = {
-      g1: "أولى إعدادي", g2: "تانية إعدادي", g3: "تالتة إعدادي",
-      s1: "أولى ثانوي", s2: "تانية ثانوي", s3: "تالتة ثانوي"
-    };
+        /* تصميم قسم البطولة (Hero Section) */
+        .hero-section {
+            position: relative;
+            width: 100%;
+            height: 90vh;
+            background: linear-gradient(to top, var(--dark-hero), transparent 40%), url('hero-bg.jpg') no-repeat center center;
+            background-size: cover;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            border-bottom: 6px solid var(--marvel-red);
+        }
 
-    document.getElementById("startBtn").addEventListener("click", async () => {
-      selectedClass = document.getElementById("classSelect").value;
-      if (!selectedClass) {
-        alert("من فضلك اختر الصف الدراسي أولاً");
-        return;
-      }
+        .hero-content {
+            z-index: 10;
+            padding: 0 5%;
+            width: 100%;
+        }
 
-      document.getElementById("startBtn").textContent = "جاري تحميل الأسئلة...";
-      document.getElementById("startBtn").disabled = true;
+        .teacher-cutout {
+            position: absolute;
+            bottom: 0;
+            left: 5%;
+            height: 90%;
+            z-index: 5;
+            filter: drop-shadow(0 0 30px rgba(226, 54, 54, 0.7));
+            transition: transform 0.4s ease;
+        }
 
-      try {
-        let res = await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify({ type: "getQuestions", classSheet: `questions_${selectedClass}` })
-        });
-        questions = await res.json();
-        showQuestions();
-        document.getElementById("classSelection").classList.add("hidden");
-        document.getElementById("quizSection").classList.remove("hidden");
-      } catch (error) {
-        alert("حدث خطأ أثناء تحميل الأسئلة. حاول مرة أخرى.");
-        document.getElementById("startBtn").textContent = "ابدأ الاختبار";
-        document.getElementById("startBtn").disabled = false;
-      }
-    });
+        .teacher-cutout:hover {
+            transform: scale(1.03) translateY(-10px);
+        }
 
-    function showQuestions() {
-      const form = document.getElementById("quizForm");
-      form.innerHTML = "";
-      questions.forEach((q, index) => {
-        correctAnswers[q.id] = q.correct;
-        explanations[q.id] = q.explanation;
+        .marvel-badge {
+            background: var(--marvel-red);
+            color: white;
+            padding: 10px 25px;
+            border: 3px solid white;
+            box-shadow: 6px 6px 0px var(--spidey-blue);
+            transform: skewX(-10deg);
+            display: inline-block;
+        }
 
-        let choicesHtml = q.choices.map(c => `
-          <label>
-            <input type="radio" name="${q.id}" value="${c}">
-            <span>${c}</span>
-          </label>
-        `).join("");
+        /* الاستيكرات الطائرة */
+        .floating-sticker {
+            position: fixed;
+            z-index: 9999;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            animation: comicPop 4s forwards;
+        }
 
-        let html = `
-          <div class="card bg-gray-800 p-5 rounded-2xl shadow-md fade-in" style="animation-delay: ${index * 100}ms;">
-            <p class="font-bold text-lg mb-4">${index + 1}. ${q.question}</p>
-            <div class="choices space-y-2">${choicesHtml}</div>
-          </div>
-        `;
-        form.innerHTML += html;
-      });
-      
-      // Add event listener for selecting answers
-      form.querySelectorAll('input[type="radio"]').forEach(radio => {
-        radio.addEventListener('change', (event) => {
-          // Remove selection from siblings
-          const parent = event.target.closest('.choices');
-          parent.querySelectorAll('label').forEach(label => label.classList.remove('selected-answer'));
-          // Add selection to current
-          event.target.parentElement.classList.add('selected-answer');
-        });
-      });
-    }
+        .floating-sticker img {
+            width: 140px;
+            height: auto;
+            filter: drop-shadow(0 0 10px var(--marvel-red));
+        }
 
-    document.getElementById("submitBtn").addEventListener("click", async (e) => {
-      e.preventDefault();
-      const name = document.getElementById("studentName").value.trim();
-      const phone = document.getElementById("studentPhone").value.trim();
-      if (!name || !phone) {
-        alert("من فضلك اكتب الاسم ورقم التليفون للمتابعة");
-        return;
-      }
+        .comic-bubble {
+            background: #fff;
+            color: #000;
+            border: 3px solid #000;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-weight: 900;
+            position: relative;
+            margin-top: -10px;
+            font-size: 14px;
+            box-shadow: 4px 4px 0px var(--marvel-red);
+        }
 
-      document.getElementById("submitBtn").disabled = true;
-      document.getElementById("submitBtn").textContent = "جاري التصحيح...";
-
-      let score = 0, wrong = [], total = questions.length;
-      questions.forEach(q => {
-        const selectedRadio = document.querySelector(`input[name="${q.id}"]:checked`);
-        const card = selectedRadio ? selectedRadio.closest(".card") : document.querySelector(`input[name="${q.id}"]`).closest('.card');
-        
-        document.querySelectorAll(`input[name="${q.id}"]`).forEach(opt => {
-          const label = opt.parentElement;
-          label.classList.remove('selected-answer'); // Clear selection style
-          if (opt.value === q.correct) {
-            label.classList.add('correct-answer');
-          }
-        });
-
-        if (selectedRadio) {
-          const selectedLabel = selectedRadio.parentElement;
-          if (selectedRadio.value === q.correct) {
-            score++;
-          } else {
-            selectedLabel.classList.add('incorrect-answer');
-            wrong.push(q.id);
-            if (q.explanation) {
-              const exp = document.createElement("div");
-              exp.className = "explanation";
-              exp.innerHTML = `<b>💡 الشرح:</b> ${q.explanation}`;
-              card.appendChild(exp);
+        @keyframes comicPop {
+            0% {
+                transform: scale(0) rotate(-15deg);
+                opacity: 0;
             }
-          }
-        } else {
-            wrong.push(q.id);
-             if (q.explanation) {
-              const exp = document.createElement("div");
-              exp.className = "explanation";
-              exp.innerHTML = `<b>💡 الشرح:</b> ${q.explanation}`;
-              card.appendChild(exp);
+
+            10% {
+                transform: scale(1.1) rotate(5deg);
+                opacity: 1;
+            }
+
+            90% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+
+            100% {
+                transform: translateY(-100px) scale(0);
+                opacity: 0;
             }
         }
-      });
 
-      const resultDiv = document.getElementById("result");
-      resultDiv.innerHTML = `✅ نتيجتك النهائية: ${score} / ${total}`;
-      resultDiv.classList.remove('hidden');
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+        /* البطاقات */
+        .card-neo {
+            background: #fff;
+            color: #000;
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px var(--spidey-blue);
+            transition: 0.3s;
+        }
 
-      document.getElementById("submitBtn").style.display = 'none';
+        .card-neo:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--marvel-red);
+        }
 
-      try {
-        await fetch(scriptURL, {
-          method: "POST",
-          body: JSON.stringify({
-            type: "saveResult",
-            className: classNames[selectedClass],
-            name, phone, score, total, wrong: JSON.stringify(wrong)
-          })
+        .btn-action {
+            background: var(--marvel-red);
+            color: white;
+            border: 3px solid black;
+            box-shadow: 4px 4px 0px #000;
+            transition: 0.2s;
+        }
+
+        .btn-action:hover {
+            transform: translate(-2px, -2px);
+            box-shadow: 6px 6px 0px #000;
+        }
+
+        /* إضافات الوظائف الجديدة (شريط التقدم والاختيارات) */
+        #progress-container {
+            width: 100%;
+            height: 6px;
+            background: #000;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 50;
+            border-bottom: 2px solid white;
+        }
+
+        #progress-bar {
+            height: 100%;
+            background: var(--marvel-red);
+            width: 0%;
+            transition: width 0.4s ease;
+        }
+
+        .radio-label {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 4px solid #e5e5e5;
+            background: #fff;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .radio-label:hover {
+            border-color: var(--spidey-blue);
+        }
+
+        .selected-answer {
+            border-color: var(--marvel-red) !important;
+            background-color: #fff9f9 !important;
+            box-shadow: 4px 4px 0px 0px var(--marvel-red);
+            transform: translate(-2px, -2px);
+        }
+
+        /* تنسيقات مشغل الفيديو الاحترافي */
+        .fake-fullscreen {
+            position: fixed !important;
+            inset: 0 !important;
+            width: 100vw !important;
+            height: 100vh !important;
+            max-width: none !important;
+            z-index: 99999 !important;
+            border-radius: 0 !important;
+            border: none !important;
+            display: flex !important;
+            flex-direction: column !important;
+            justify-content: center !important;
+            background: #000 !important;
+        }
+
+        .fake-fullscreen .video-wrapper {
+            flex: 1 !important;
+            height: 100% !important;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background: #000;
+        }
+
+        @keyframes ripple {
+            0% {
+                opacity: 0.8;
+                transform: scale(0.9);
+            }
+
+            100% {
+                opacity: 0;
+                transform: scale(1.5);
+            }
+        }
+
+        .ripple-effect {
+            animation: ripple 0.5s ease-out forwards;
+            display: flex !important;
+        }
+
+        .image-link-card {
+            min-height: 320px;
+            border: 4px solid #fff;
+            box-shadow: 0 18px 50px rgba(0, 0, 0, 0.35);
+            background: linear-gradient(180deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.7)), url('input_file_4.png') center/cover no-repeat;
+        }
+
+        .image-link-text {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+            font-weight: 900;
+            font-size: 1.3rem;
+            margin-top: 1rem;
+            transition: transform 0.2s ease, color 0.2s ease;
+        }
+
+        .image-link-text:hover {
+            color: #f3bc2c;
+            transform: translateX(-4px);
+        }
+    </style>
+</head>
+
+<body class="pb-16 pt-2">
+
+    <div id="progress-container" class="hidden">
+        <div id="progress-bar"></div>
+    </div>
+
+    <div id="loading-screen">
+        <img src="sticker5.png" class="w-40 h-40 mb-6 animate-bounce" onerror="this.style.display='none'">
+        <h1 class="marvel-font text-5xl text-white italic">ASSEMBLING...</h1>
+    </div>
+
+    <header id="home-section" class="hero-section mb-12">
+        <div class="hero-content">
+            <div class="reveal-up">
+                <div class="marvel-badge mb-4">
+                    <h1 class="marvel-font text-5xl md:text-7xl">MR. AHMED Jamal</h1>
+                </div>
+                <h2 class="text-3xl md:text-5xl font-black text-white italic drop-shadow-lg">
+                    The <span class="text-red-500">Multiverse</span> of English
+                </h2>
+                <p class="text-xl text-gray-300 mt-6 max-w-lg font-bold">
+                    "The power of words is your ultimate superpower. Are you ready to join the academy?"
+                </p>
+                <div class="flex flex-wrap gap-4 mt-8">
+                    <button onclick="goTo('quiz-login')" class="btn-action px-8 py-4 marvel-font text-2xl">
+                        START MISSION <i class="fa-solid fa-bolt ml-2"></i>
+                    </button>
+                    <button onclick="goTo('lectures')"
+                        class="bg-blue-700 border-3 border-black text-white font-bold px-8 py-4 marvel-font text-2xl shadow-[4px_4px_0px_#000] hover:translate-y-[-2px] hover:translate-x-[-2px] transition">
+                        TRAINING ROOM
+                    </button>
+                </div>
+            </div>
+        </div>
+        <img src="sticker5.png" class="teacher-cutout hidden md:block" alt="Ahmed Jamal">
+    </header>
+
+    <div class="container mx-auto px-4 max-w-4xl mb-12">
+        <div class="image-link-card rounded-3xl overflow-hidden"></div>
+
+    </div>
+
+    <div class="container mx-auto px-4 max-w-4xl">
+
+        <div id="main-features" class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+            <div onclick="goTo('quiz-login')" class="card-neo p-8 cursor-pointer group">
+                <i class="fa-solid fa-file-signature text-5xl mb-4 text-red-600"></i>
+                <h2 class="marvel-font text-3xl mb-2">Exams Portal</h2>
+                <p class="font-bold text-gray-600">ادخل بوابه الاختبارات واثبت قوتك اللغوية.</p>
+            </div>
+            <div onclick="goTo('lectures')" class="card-neo p-8 cursor-pointer group">
+                <i class="fa-solid fa-play text-5xl mb-4 text-blue-700"></i>
+                <h2 class="marvel-font text-3xl mb-2">Video Library</h2>
+                <p class="font-bold text-gray-600">شاهد المحاضرات التدريبية في غرفة التدريب.</p>
+            </div>
+        </div>
+
+        <section id="lectures-section" class="hidden">
+            <button onclick="location.reload()" class="mb-6 font-bold text-white flex items-center gap-2"><i
+                    class="fa-solid fa-arrow-right"></i> العودة للقاعدة</button>
+            <div class="card-neo p-6 md:p-10">
+                <h2 class="marvel-font text-4xl mb-6 text-red-600 border-b-4 border-black pb-2 text-center">Mission
+                    Archives</h2>
+
+                <div class="mb-6">
+                    <select id="video-class-filter"
+                        class="w-full p-4 border-4 border-black font-bold text-lg outline-none"
+                        onchange="loadStudentVideos()">
+                        <option value="all">عرض كل المهام (الصفوف)</option>
+                        <optgroup label="المرحلة الإعدادية">
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الثانوية">
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </optgroup>
+                    </select>
+                </div>
+
+                <div id="videos-container" class="space-y-4"></div>
+            </div>
+        </section>
+
+        <section id="quiz-login-section" class="hidden">
+            <button onclick="location.reload()" class="mb-6 font-bold text-white flex items-center gap-2"><i
+                    class="fa-solid fa-arrow-right"></i> العودة للقاعدة</button>
+            <div class="card-neo p-8 md:p-12">
+                <h2 class="marvel-font text-4xl text-center mb-2 text-blue-700">Hero Verification</h2>
+                <h2 class="text-xl font-black text-center mb-8 text-red-600 uppercase tracking-wide">(يتم فتح الاختبار
+                    مره واحده للجهاز الواحد)</h2>
+
+                <div class="space-y-6">
+                    <input id="inputName" type="text" placeholder="الاسم ثلاثي"
+                        class="w-full p-4 border-4 border-black font-bold text-lg focus:bg-yellow-50 outline-none transition">
+
+                    <input id="inputCode" type="text" placeholder="كود البطل (Student Code)"
+                        class="w-full p-4 border-4 border-black font-bold text-lg uppercase focus:bg-yellow-50 outline-none transition"
+                        dir="ltr" oninput="sanitizeCode(this)">
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <input id="inputPhone" type="tel" placeholder="رقم الهاتف"
+                            class="w-full p-4 border-4 border-black font-bold text-lg focus:bg-yellow-50 outline-none transition"
+                            dir="ltr">
+
+                        <select id="inputClass"
+                            class="w-full p-4 border-4 border-black font-bold text-lg outline-none cursor-pointer">
+                            <option value="" disabled selected>اختر المرحلة الدراسية...</option>
+                            <optgroup label="المرحلة الإعدادية">
+                                <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                                <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                                <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                            </optgroup>
+                            <optgroup label="المرحلة الثانوية">
+                                <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                                <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                                <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                            </optgroup>
+                        </select>
+                    </div>
+
+                    <select id="inputGroup"
+                        class="w-full p-4 border-4 border-black font-bold text-lg outline-none cursor-pointer">
+                        <option value="" disabled selected>أيام الحضور (اختر المجموعة)...</option>
+                        <option value="السبت">السبت</option>
+                        <option value="الأحد">الأحد</option>
+                        <option value="الإثنين">الإثنين</option>
+                        <option value="الثلاثاء">الثلاثاء</option>
+                        <option value="الأربعاء">الأربعاء</option>
+                        <option value="الخميس">الخميس</option>
+                        <option value="الجمعة">الجمعة</option>
+                    </select>
+
+                    <button onclick="handleLogin()" id="loginBtn"
+                        class="w-full btn-action py-5 marvel-font text-3xl flex justify-center items-center gap-2">
+                        LAUNCH MISSION <i class="fa-solid fa-bolt"></i>
+                    </button>
+                    <p id="loginError"
+                        class="hidden bg-black text-red-500 p-4 text-center font-bold border-2 border-red-500"></p>
+                </div>
+            </div>
+        </section>
+
+        <section id="quiz-section" class="hidden">
+            <div class="card-neo p-5 mb-8 flex flex-col md:flex-row justify-between items-center gap-4">
+                <div class="text-center md:text-right">
+                    <p class="text-sm font-bold uppercase text-red-600 mb-1" id="displayGroupInfo"></p>
+                    <p id="displayStudentName" class="text-2xl font-black marvel-font text-blue-700"></p>
+                </div>
+                <div id="displayClassName"
+                    class="bg-black text-white border-2 border-white px-6 py-2 font-bold text-sm uppercase tracking-wide">
+                </div>
+            </div>
+
+            <div id="quizContainer">
+                <form id="quizForm" class="space-y-8"></form>
+                <button id="submitBtn" onclick="submitQuiz()"
+                    class="w-full btn-action py-6 marvel-font text-4xl mt-12 flex justify-center items-center gap-3">
+                    FINISH MISSION <i class="fa-solid fa-check"></i>
+                </button>
+            </div>
+        </section>
+
+        <section id="finalResultContainer" class="hidden card-neo p-10 text-center">
+            <h2 class="marvel-font text-5xl mb-4 text-green-600">Victory!</h2>
+            <p class="font-bold text-xl mb-6">لقد أكملت المهمة بنجاح، احتفظ بالكود المشفر للمراجعة:</p>
+            <div id="qrcode" class="flex justify-center mb-6"></div>
+            <p id="resCode" class="text-4xl font-black text-red-600 marvel-font"></p>
+            <button onclick="location.reload()" class="mt-8 btn-action px-10 py-3 font-bold text-xl">العودة
+                للرئيسية</button>
+        </section>
+
+        <div class="mt-12">
+            <a href="https://wa.me/201277085381"
+                class="block bg-green-500 border-4 border-black p-6 text-center text-white font-black text-2xl hover:bg-green-600 transition shadow-[4px_4px_0px_#000] hover:translate-y-[-2px] hover:translate-x-[-2px]">
+                <i class="fa-brands fa-whatsapp ml-2"></i> CALL FOR BACKUP (SUPPORT)
+            </a>
+        </div>
+
+        <footer class="mt-20 border-t-4 border-white pt-10 text-center">
+            <p class="marvel-font text-2xl text-gray-400">Developed with power by</p>
+            <h3 class="text-4xl font-black text-white">ABD ELRAHMAN TAREK</h3>
+            <a class="image-link-text" href="https://man9000442-hub.github.io/Eng-Abdelrahman-prot/" target="_blank"
+                rel="noopener noreferrer">abdelrahman <i class="fa-solid fa-arrow-up-right-from-square"></i>
+            </a>
+        </footer>
+    </div>
+
+    <div id="videoModal"
+        class="fixed inset-0 bg-black/95 backdrop-blur-md z-[100] hidden flex-col items-center justify-center p-0 md:p-10 opacity-0 transition-opacity duration-300">
+
+        <button onclick="closeVideoModal()" id="closeVideoBtn"
+            class="absolute top-4 right-4 md:top-6 md:right-6 text-white hover:text-red-500 transition text-2xl md:text-4xl z-[110] bg-black/50 rounded-full w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border-2 border-white">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+
+        <div id="videoPlayerContainer"
+            class="w-full max-w-5xl bg-black md:rounded-xl overflow-hidden border-4 border-white shadow-[0_0_50px_rgba(226,54,54,0.5)] relative flex flex-col transition-all duration-300">
+
+            <div class="relative w-full aspect-video bg-black video-wrapper flex-shrink-0">
+                <div id="touchOverlay"
+                    class="absolute inset-0 z-10 cursor-pointer flex justify-between overflow-hidden">
+                    <div id="rewindIndicator"
+                        class="hidden w-1/3 h-full flex-col items-center justify-center bg-white/20 text-white rounded-r-[100%] pointer-events-none">
+                        <i class="fa-solid fa-backward-rotate-10 text-3xl md:text-5xl mb-2 text-red-500"></i>
+                        <span class="font-bold text-sm md:text-base">-10 ثواني</span>
+                    </div>
+
+                    <div class="w-1/3 h-full pointer-events-none"></div>
+
+                    <div id="forwardIndicator"
+                        class="hidden w-1/3 h-full flex-col items-center justify-center bg-white/20 text-white rounded-l-[100%] pointer-events-none">
+                        <i class="fa-solid fa-forward-rotate-10 text-3xl md:text-5xl mb-2 text-red-500"></i>
+                        <span class="font-bold text-sm md:text-base">+10 ثواني</span>
+                    </div>
+                </div>
+
+                <div id="youtubePlayer" class="absolute top-0 left-0 w-full h-full pointer-events-none"></div>
+            </div>
+
+            <div id="customVideoControls"
+                class="bg-gradient-to-t from-black/90 to-transparent text-white p-3 md:p-4 flex items-center gap-3 md:gap-4 z-20 absolute bottom-0 left-0 right-0 transition-opacity duration-300 border-t-2 border-red-600">
+                <button onclick="togglePlayPause()" id="playPauseBtn"
+                    class="text-white hover:text-red-500 transition text-2xl w-8 flex justify-center drop-shadow-md">
+                    <i class="fa-solid fa-play"></i>
+                </button>
+
+                <div class="text-xs md:text-sm font-mono text-white w-12 text-center drop-shadow-md font-bold"
+                    id="timeDisplay">0:00</div>
+
+                <input type="range" id="progressBarVideo"
+                    class="flex-1 accent-red-600 cursor-pointer h-1.5 bg-white/30 rounded-lg appearance-none drop-shadow-md"
+                    min="0" max="100" value="0" step="0.1" oninput="seekVideoDrag(this.value)"
+                    onchange="seekVideoDrop(this.value)">
+
+                <button onclick="changeSpeed()" id="speedBtn"
+                    class="text-xs font-black text-white hover:text-red-500 transition min-w-[30px] drop-shadow-md">1x</button>
+
+                <button onclick="toggleMute()" id="muteBtn"
+                    class="text-white hover:text-red-500 transition w-8 drop-shadow-md">
+                    <i class="fa-solid fa-volume-high"></i>
+                </button>
+
+                <button onclick="toggleFakeFullscreen()"
+                    class="text-white hover:text-red-500 transition w-8 drop-shadow-md">
+                    <i class="fa-solid fa-expand"></i>
+                </button>
+            </div>
+        </div>
+        <h3 id="videoModalTitle"
+            class="text-white mt-4 text-lg md:text-2xl font-black tracking-wide text-center uppercase px-4 z-[110] marvel-font">
+        </h3>
+    </div>
+
+    <script>
+        // المتغيرات ومفاتيح قاعدة البيانات
+        const SECRET_KEY = "JamalAcademy_Secret_2026";
+        const SUPABASE_URL = "https://eqbbdnsglcyivggmtkoe.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxYmJkbnNnbGN5aXZnZ210a29lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODc3NTMsImV4cCI6MjA5MzU2Mzc1M30.dThJWpMWOs6weXKwm7rUleIzqAfuK_Q5oRW27Gr4nKw";
+
+        const teacherImages = ['sticker1.png', 'sticker2.png', 'sticker3.png', 'sticker4.png', 'sticker5.png'];
+        const motivationalMessages = [
+            "With great English comes great grades!",
+            "You are a linguistic hero!",
+            "Keep pushing, Avenger!",
+            "Don't let the grammar villains win!",
+            "Excelelsior! Your level is rising!"
+        ];
+
+        let questions = [];
+        let currentQuizId = null;
+        let student = { name: "", code: "", phone: "", className: "", groupName: "", score: 0 };
+
+        async function supabaseRequest(method, table, query = "", body = null) {
+            const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
+            const options = { method: method, headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_ANON_KEY, 'Authorization': `Bearer ${SUPABASE_ANON_KEY}` } };
+            if (method === "POST" || method === "PATCH") options.headers['Prefer'] = 'return=representation';
+            if (body) options.body = JSON.stringify(body);
+            const res = await fetch(url, options);
+            if (!res.ok) throw new Error("Request failed");
+            if (method === "DELETE" || res.status === 204) return true;
+            return await res.json();
+        }
+
+        window.onload = () => {
+            setTimeout(() => {
+                document.getElementById('loading-screen').style.opacity = '0';
+                setTimeout(() => document.getElementById('loading-screen').style.display = 'none', 600);
+            }, 2000);
+            setInterval(showRandomSticker, 9000);
+        };
+
+        function showRandomSticker() {
+            if (!document.getElementById('videoModal').classList.contains('hidden')) return;
+            const img = teacherImages[Math.floor(Math.random() * teacherImages.length)];
+            const msg = motivationalMessages[Math.floor(Math.random() * motivationalMessages.length)];
+            const div = document.createElement('div');
+            div.className = 'floating-sticker';
+            div.style.left = Math.random() * (window.innerWidth - 150) + 'px';
+            div.style.top = Math.random() * (window.innerHeight - 200) + 'px';
+            div.innerHTML = `<img src="${img}"><div class="comic-bubble text-center">${msg}</div>`;
+            document.body.appendChild(div);
+            setTimeout(() => div.remove(), 4000);
+        }
+
+        function goTo(section) {
+            document.getElementById('home-section').classList.add('hidden');
+            document.getElementById('main-features').classList.add('hidden');
+            document.querySelectorAll('section').forEach(s => s.classList.add('hidden'));
+
+            if (section === 'quiz-login') {
+                document.getElementById('quiz-login-section').classList.remove('hidden');
+            } else if (section === 'lectures') {
+                document.getElementById('lectures-section').classList.remove('hidden');
+                loadStudentVideos();
+            }
+            window.scrollTo(0, 0);
+        }
+
+        async function loadStudentVideos() {
+            const container = document.getElementById('videos-container');
+            const filter = document.getElementById('video-class-filter').value;
+            container.innerHTML = '<p class="text-center marvel-font text-2xl text-white">LOADING MISSIONS...</p>';
+            try {
+                let query = '?order=id.desc';
+                if (filter !== 'all') query += `&class_name=eq.${encodeURIComponent(filter)}`;
+                const videos = await supabaseRequest('GET', 'Jamal_videos', query);
+
+                if (videos.length === 0) {
+                    container.innerHTML = '<div class="p-6 border-4 border-black text-center font-bold text-gray-500 bg-white">No missions available.</div>';
+                    return;
+                }
+
+                container.innerHTML = videos.map(v => `
+                    <div class="bg-black text-white p-5 border-4 border-black shadow-[4px_4px_0px_#fff] flex flex-col md:flex-row justify-between items-center group gap-4">
+                        <div class="text-center md:text-left">
+                            <h3 class="font-black text-xl uppercase text-red-500">${v.title}</h3>
+                            <span class="text-xs font-bold bg-white text-black px-2 py-1 uppercase mt-2 inline-block">${v.class_name}</span>
+                        </div>
+                        <button onclick="openVideoModal('${v.youtube_url}', '${v.title}')" class="bg-white text-black px-8 py-3 font-black border-2 border-transparent hover:border-red-600 transition w-full md:w-auto flex justify-center items-center gap-2">
+                            <i class="fa-solid fa-play"></i> PLAY
+                        </button>
+                    </div>`).join('');
+            } catch (e) {
+                container.innerHTML = '<p class="text-red-500 font-bold text-center">Connection Error.</p>';
+            }
+        }
+
+        function sanitizeCode(inputElement) {
+            let val = inputElement.value;
+            val = val.replace(/\s+/g, '').replace(/[^a-zA-Z0-9-]/g, '');
+            inputElement.value = val.toUpperCase();
+        }
+
+        async function handleLogin() {
+            const name = document.getElementById("inputName").value.trim();
+            const code = document.getElementById("inputCode").value.trim();
+            const phone = document.getElementById("inputPhone").value.trim();
+            const cls = document.getElementById("inputClass").value;
+            const grp = document.getElementById("inputGroup").value;
+
+            const btn = document.getElementById("loginBtn");
+            const err = document.getElementById("loginError");
+
+            if (!name || !code || !phone || !cls || !grp) {
+                err.textContent = "Please complete your identity, Hero!";
+                err.classList.remove("hidden");
+                return;
+            }
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> VERIFYING...';
+            err.classList.add("hidden");
+
+            try {
+                student = { name, code, phone, className: cls, groupName: grp };
+                const activeQuiz = await supabaseRequest('GET', 'Jamal_quizzes', `?class_name=eq.${encodeURIComponent(cls)}&is_active=eq.true&limit=1`);
+
+                if (!activeQuiz.length) throw new Error("No active missions found.");
+                currentQuizId = activeQuiz[0].id;
+
+                // التحقق من أن الطالب لم يمتحن من قبل على هذا الجهاز
+                if (localStorage.getItem('jamal_completed_quiz_' + currentQuizId) === 'true') {
+                    throw new Error("عذراً، لقد قمت بأداء هذه المهمة مسبقاً من هذا الجهاز.");
+                }
+
+                // التحقق من قاعدة البيانات
+                const existingResult = await supabaseRequest('GET', 'Jamal_results', `?student_code=eq.${code}&quiz_id=eq.${currentQuizId}&limit=1`);
+                if (existingResult.length > 0) throw new Error("لقد أنجزت هذه المهمة مسبقاً (كود مسجل).");
+
+                const qsData = await supabaseRequest('GET', 'Jamal_questions', `?quiz_id=eq.${currentQuizId}`);
+                if (!qsData.length) throw new Error("Mission data is empty.");
+
+                questions = qsData.map(q => ({ id: q.id, text: q.question_text, choices: [q.choice_a, q.choice_b, q.choice_c, q.choice_d], correct: q.correct_answer }));
+
+                document.getElementById('quiz-login-section').classList.add('hidden');
+                displayExam();
+            } catch (e) {
+                err.textContent = e.message;
+                err.classList.remove("hidden");
+                btn.disabled = false;
+                btn.innerHTML = 'LAUNCH MISSION <i class="fa-solid fa-bolt"></i>';
+            }
+        }
+
+        function displayExam() {
+            document.getElementById("progress-container").classList.remove("hidden");
+            document.getElementById("quiz-section").classList.remove("hidden");
+
+            document.getElementById("displayStudentName").textContent = student.name;
+            document.getElementById("displayGroupInfo").textContent = `Group: ${student.groupName}`;
+            document.getElementById("displayClassName").textContent = student.className;
+
+            const form = document.getElementById("quizForm");
+            form.innerHTML = questions.map((q, i) => `
+                <div class="card-neo p-6 md:p-8">
+                    <p class="font-black text-xl mb-6"><span class="text-red-600 marvel-font text-3xl mr-2">#${i + 1}</span> ${q.text}</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 choices-area">
+                        ${q.choices.map((c, idx) => {
+                const choiceLetter = ['A', 'B', 'C', 'D'][idx];
+                return `
+                            <label class="radio-label">
+                                <input type="radio" name="q${q.id}" value="${choiceLetter}" class="hidden" onchange="updateProgress()">
+                                <div class="w-6 h-6 border-2 border-black rounded-full ml-3 flex items-center justify-center indicator transition-all bg-white"></div>
+                                <span class="font-bold text-gray-800">${c}</span>
+                            </label>`;
+            }).join("")}
+                    </div>
+                </div>`).join("");
+
+            // إضافة تأثير التحديد للأزرار
+            form.querySelectorAll('input[type="radio"]').forEach(input => {
+                input.addEventListener('change', (e) => {
+                    const parent = e.target.closest('.choices-area');
+                    parent.querySelectorAll('.radio-label').forEach(l => {
+                        l.classList.remove('selected-answer');
+                        l.querySelector('.indicator').classList.remove('bg-red-600');
+                    });
+                    const selectedLabel = e.target.closest('.radio-label');
+                    selectedLabel.classList.add('selected-answer');
+                    selectedLabel.querySelector('.indicator').classList.add('bg-red-600');
+                });
+            });
+        }
+
+        function updateProgress() {
+            const answered = document.querySelectorAll('input[type="radio"]:checked').length;
+            document.getElementById("progress-bar").style.width = ((answered / questions.length) * 100) + "%";
+        }
+
+        async function submitQuiz() {
+            const inputs = document.querySelectorAll('input[type="radio"]:checked');
+            if (inputs.length < questions.length) { alert("Complete all tasks, Hero!"); return; }
+            if (!confirm("Are you sure you want to finish the mission?")) return;
+
+            const btn = document.getElementById("submitBtn");
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> SAVING...';
+
+            let score = 0;
+            questions.forEach(q => {
+                const picked = document.querySelector(`input[name="q${q.id}"]:checked`);
+                if (picked && picked.value === q.correct) score++;
+            });
+
+            try {
+                // إرسال البيانات (تم إضافة phone و group_name ليطابق قاعدة البيانات المطورة)
+                await supabaseRequest('POST', 'Jamal_results', '', {
+                    student_name: student.name,
+                    student_code: student.code,
+                    phone: student.phone, // في حال دعمها في الجدول
+                    class_name: student.className,
+                    group_name: student.groupName, // في حال دعمها في الجدول
+                    quiz_id: currentQuizId,
+                    score: score,
+                    total_questions: questions.length
+                });
+
+                // تسجيل أن الطالب امتحن على هذا الجهاز
+                localStorage.setItem('jamal_completed_quiz_' + currentQuizId, 'true');
+
+                student.score = `${score}/${questions.length}`;
+
+                // التشفير باستخدام الكود السري
+                const encryptedText = CryptoJS.AES.encrypt(JSON.stringify({
+                    name: student.name, code: student.code, score: student.score
+                }), SECRET_KEY).toString();
+
+                document.getElementById("progress-container").classList.add("hidden");
+                document.getElementById("quiz-section").classList.add("hidden");
+                document.getElementById("finalResultContainer").classList.remove("hidden");
+
+                document.getElementById("resCode").textContent = student.code;
+                new QRCode(document.getElementById("qrcode"), {
+                    text: encryptedText,
+                    width: 220,
+                    height: 220,
+                    colorDark: "#000",
+                    colorLight: "#fff",
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                alert("Error saving data.");
+                btn.disabled = false;
+                btn.innerHTML = 'FINISH MISSION <i class="fa-solid fa-check"></i>';
+            }
+        }
+
+        // ================= مشغل الفيديو الاحترافي =================
+        let tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        let firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        let ytPlayer, progressInterval, controlsTimeout;
+        let isPlaying = false, isMuted = false, isDragging = false;
+        const speeds = [1, 1.25, 1.5, 2, 0.5];
+        let currentSpeedIdx = 0;
+
+        function extractYouTubeID(url) {
+            const match = url.match(/^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        function onYouTubeIframeAPIReady() { }
+
+        function openVideoModal(url, title) {
+            const videoId = extractYouTubeID(url);
+            if (!videoId) { alert("Invalid Video Link."); return; }
+
+            document.getElementById('videoModalTitle').textContent = title;
+            const modal = document.getElementById('videoModal');
+            modal.classList.remove('hidden');
+            setTimeout(() => { modal.classList.remove('opacity-0'); }, 10);
+
+            if (!ytPlayer) {
+                ytPlayer = new YT.Player('youtubePlayer', {
+                    videoId: videoId,
+                    playerVars: { 'autoplay': 1, 'controls': 0, 'disablekb': 1, 'modestbranding': 1, 'rel': 0, 'showinfo': 0, 'fs': 0, 'playsinline': 1 },
+                    events: { 'onReady': onPlayerReady, 'onStateChange': onPlayerStateChange }
+                });
+            } else { ytPlayer.loadVideoById(videoId); }
+
+            document.getElementById('speedBtn').innerText = '1x';
+            currentSpeedIdx = 0;
+            document.getElementById('progressBarVideo').value = 0;
+            showControlsTemporarily();
+        }
+
+        function closeVideoModal() {
+            const modal = document.getElementById('videoModal');
+            modal.classList.add('opacity-0');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                if (ytPlayer && ytPlayer.stopVideo) ytPlayer.stopVideo();
+                clearInterval(progressInterval);
+                const container = document.getElementById('videoPlayerContainer');
+                container.classList.remove('fake-fullscreen');
+                if (document.fullscreenElement && document.exitFullscreen) document.exitFullscreen();
+            }, 300);
+        }
+
+        function onPlayerReady(event) { event.target.playVideo(); }
+
+        function onPlayerStateChange(event) {
+            if (event.data == YT.PlayerState.PLAYING) {
+                isPlaying = true;
+                document.getElementById('playPauseBtn').innerHTML = '<i class="fa-solid fa-pause"></i>';
+                startProgressBar();
+                showControlsTemporarily();
+            } else {
+                isPlaying = false;
+                document.getElementById('playPauseBtn').innerHTML = '<i class="fa-solid fa-play"></i>';
+                clearInterval(progressInterval);
+                showControlsPermanently();
+            }
+        }
+
+        function togglePlayPause() { if (isPlaying) ytPlayer.pauseVideo(); else ytPlayer.playVideo(); }
+
+        function changeSpeed() {
+            if (ytPlayer && ytPlayer.setPlaybackRate) {
+                currentSpeedIdx = (currentSpeedIdx + 1) % speeds.length;
+                ytPlayer.setPlaybackRate(speeds[currentSpeedIdx]);
+                document.getElementById('speedBtn').innerText = speeds[currentSpeedIdx] + 'x';
+            }
+        }
+
+        function toggleMute() {
+            if (isMuted) { ytPlayer.unMute(); isMuted = false; document.getElementById('muteBtn').innerHTML = '<i class="fa-solid fa-volume-high"></i>'; }
+            else { ytPlayer.mute(); isMuted = true; document.getElementById('muteBtn').innerHTML = '<i class="fa-solid fa-volume-xmark"></i>'; }
+        }
+
+        function seekVideoDrag(val) {
+            isDragging = true;
+            if (ytPlayer && ytPlayer.getDuration) document.getElementById('timeDisplay').innerText = formatTime((val / 100) * ytPlayer.getDuration());
+            showControlsTemporarily();
+        }
+
+        function seekVideoDrop(val) {
+            if (ytPlayer && ytPlayer.getDuration) ytPlayer.seekTo((val / 100) * ytPlayer.getDuration(), true);
+            isDragging = false;
+        }
+
+        function startProgressBar() {
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (ytPlayer && ytPlayer.getCurrentTime && !isDragging) {
+                    const time = ytPlayer.getCurrentTime(); const dur = ytPlayer.getDuration();
+                    document.getElementById('progressBarVideo').value = (time / dur) * 100;
+                    document.getElementById('timeDisplay').innerText = formatTime(time);
+                }
+            }, 500);
+        }
+
+        function formatTime(sec) { if (!sec) return "0:00"; const m = Math.floor(sec / 60); const s = Math.floor(sec % 60); return `${m}:${s < 10 ? '0' : ''}${s}`; }
+
+        let lastTapTime = 0;
+        let tapTimeout;
+        const DOUBLE_TAP_DELAY = 300;
+
+        document.getElementById('touchOverlay').addEventListener('click', function (e) {
+            const currentTime = new Date().getTime();
+            const tapLength = currentTime - lastTapTime;
+            const rect = this.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const isRightSide = clickX > rect.width / 2;
+
+            clearTimeout(tapTimeout);
+
+            if (tapLength < DOUBLE_TAP_DELAY && tapLength > 0) {
+                if (isRightSide) {
+                    skipVideo(10); showIndicator('forwardIndicator');
+                } else {
+                    skipVideo(-10); showIndicator('rewindIndicator');
+                }
+            } else {
+                tapTimeout = setTimeout(() => { toggleControlsVisibility(); }, DOUBLE_TAP_DELAY);
+            }
+            lastTapTime = currentTime;
         });
-      } catch (error) {
-        console.error('Failed to save result:', error);
-      }
-    });
-  </script>
+
+        function skipVideo(seconds) {
+            if (ytPlayer && ytPlayer.getCurrentTime) {
+                const newTime = ytPlayer.getCurrentTime() + seconds;
+                ytPlayer.seekTo(newTime, true);
+                showControlsTemporarily();
+            }
+        }
+
+        function showIndicator(id) {
+            const indicator = document.getElementById(id);
+            indicator.classList.remove('hidden');
+            indicator.classList.add('ripple-effect');
+            setTimeout(() => {
+                indicator.classList.add('hidden');
+                indicator.classList.remove('ripple-effect');
+            }, 500);
+        }
+
+        function toggleControlsVisibility() {
+            const controls = document.getElementById('customVideoControls');
+            const closeBtn = document.getElementById('closeVideoBtn');
+            const title = document.getElementById('videoModalTitle');
+
+            if (controls.classList.contains('opacity-0')) {
+                controls.classList.remove('opacity-0', 'pointer-events-none');
+                closeBtn.classList.remove('opacity-0', 'pointer-events-none');
+                title.classList.remove('opacity-0');
+                showControlsTemporarily();
+            } else {
+                controls.classList.add('opacity-0', 'pointer-events-none');
+                closeBtn.classList.add('opacity-0', 'pointer-events-none');
+                title.classList.add('opacity-0');
+            }
+        }
+
+        function showControlsTemporarily() {
+            clearTimeout(controlsTimeout);
+            const controls = document.getElementById('customVideoControls');
+            const closeBtn = document.getElementById('closeVideoBtn');
+            const title = document.getElementById('videoModalTitle');
+
+            controls.classList.remove('opacity-0', 'pointer-events-none');
+            closeBtn.classList.remove('opacity-0', 'pointer-events-none');
+            title.classList.remove('opacity-0');
+
+            if (isPlaying) {
+                controlsTimeout = setTimeout(() => {
+                    controls.classList.add('opacity-0', 'pointer-events-none');
+                    closeBtn.classList.add('opacity-0', 'pointer-events-none');
+                    title.classList.add('opacity-0');
+                }, 3000);
+            }
+        }
+
+        function showControlsPermanently() {
+            clearTimeout(controlsTimeout);
+            document.getElementById('customVideoControls').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('closeVideoBtn').classList.remove('opacity-0', 'pointer-events-none');
+            document.getElementById('videoModalTitle').classList.remove('opacity-0');
+        }
+
+        function toggleFakeFullscreen() {
+            const container = document.getElementById('videoPlayerContainer');
+
+            if (!document.fullscreenElement && !container.classList.contains('fake-fullscreen')) {
+                if (container.requestFullscreen) {
+                    container.requestFullscreen().catch(err => { container.classList.add('fake-fullscreen'); });
+                } else if (container.webkitRequestFullscreen) {
+                    container.webkitRequestFullscreen();
+                } else {
+                    container.classList.add('fake-fullscreen');
+                }
+                if (screen.orientation && screen.orientation.lock) {
+                    screen.orientation.lock("landscape").catch(e => console.log(e));
+                }
+            } else {
+                if (document.fullscreenElement && document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+                container.classList.remove('fake-fullscreen');
+                if (screen.orientation && screen.orientation.unlock) {
+                    screen.orientation.unlock();
+                }
+            }
+            showControlsTemporarily();
+        }
+    </script>
 </body>
+
 </html>
