@@ -92,6 +92,12 @@
             font-weight: bold;
             color: #000;
             width: 100%;
+            outline: none;
+        }
+
+        .modern-input:focus {
+            border-color: var(--marvel-red);
+            background: #fff;
         }
 
         /* Responsive Navigation */
@@ -162,6 +168,19 @@
         .btn-hero:hover {
             transform: translate(-2px, -2px);
             box-shadow: 6px 6px 0px #000;
+        }
+
+        /* Sub-tabs styling */
+        .sub-tab {
+            background: #222;
+            color: #fff;
+            border: 3px solid #000;
+            transition: all 0.2s;
+        }
+        .sub-tab.active {
+            background: var(--marvel-red);
+            box-shadow: 4px 4px 0px #000;
+            transform: translate(-2px, -2px);
         }
 
         #loading-screen {
@@ -315,30 +334,105 @@
 
         <!-- قسم الدرجات -->
         <div id="results-section" class="tab-content hidden space-y-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div class="card-comic p-6 bg-red-600 text-white">
-                    <h3 class="marvel-font text-2xl mb-4">Search Identity</h3>
-                    <input type="text" id="searchResultCode" placeholder="ENTER STUDENT CODE" class="modern-input"
-                        onkeyup="filterResults()">
+            
+            <!-- أزرار التبديل بين سجل الدرجات ولوحة الشرف -->
+            <div class="flex gap-4 mb-6">
+                <button onclick="toggleResultView('archives')" id="tab-archives" class="sub-tab active flex-1 py-3 font-black text-xl marvel-font">
+                    SCORE ARCHIVES
+                </button>
+                <button onclick="toggleResultView('rankings')" id="tab-rankings" class="sub-tab flex-1 py-3 font-black text-xl marvel-font">
+                    HALL OF FAME
+                </button>
+            </div>
+
+            <!-- عرض سجل الدرجات (Grades) -->
+            <div id="view-archives">
+                <div class="card-comic p-6 mb-6 bg-gray-100">
+                    <h3 class="marvel-font text-2xl mb-4 text-blue-700">Filter Archives</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <input type="text" id="searchAny" placeholder="Search by Code, Name, Phone..." class="modern-input" onkeyup="filterResults()">
+                        <select id="filterClass" class="modern-input" onchange="filterResults()">
+                            <option value="all">كل الصفوف</option>
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </select>
+                        <select id="filterGroup" class="modern-input" onchange="filterResults()">
+                            <option value="all">كل المجاميع (أيام الحضور)</option>
+                            <option value="السبت">السبت</option>
+                            <option value="الأحد">الأحد</option>
+                            <option value="الإثنين">الإثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                        </select>
+                    </div>
                 </div>
-                <div class="card-comic p-6 bg-blue-700 text-white">
-                    <h3 class="marvel-font text-2xl mb-4">Hall of Fame</h3>
-                    <button onclick="fetchHonorRoll()"
-                        class="btn-hero w-full bg-yellow-500 text-black border-white">UPDATE RANKINGS</button>
+
+                <div class="card-comic overflow-x-auto">
+                    <table class="w-full text-left whitespace-nowrap">
+                        <thead class="bg-black text-white marvel-font">
+                            <tr>
+                                <th class="p-4">CODE</th>
+                                <th class="p-4">NAME & PHONE</th>
+                                <th class="p-4">CLASS & GROUP</th>
+                                <th class="p-4">SCORE</th>
+                            </tr>
+                        </thead>
+                        <tbody id="resultsTableBody" class="font-bold text-sm"></tbody>
+                    </table>
                 </div>
             </div>
-            <div class="card-comic overflow-x-auto">
-                <table class="w-full text-left">
-                    <thead class="bg-black text-white marvel-font">
-                        <tr>
-                            <th class="p-4">CODE</th>
-                            <th class="p-4">NAME</th>
-                            <th class="p-4">SCORE</th>
-                        </tr>
-                    </thead>
-                    <tbody id="resultsTableBody" class="font-bold"></tbody>
-                </table>
+
+            <!-- عرض لوحة الشرف (Rankings) -->
+            <div id="view-rankings" class="hidden">
+                <div class="card-comic p-6 mb-6 bg-red-50">
+                    <h3 class="marvel-font text-2xl mb-4 text-red-600">Rank Settings</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <select id="rankClass" class="modern-input">
+                            <option value="all">كل الصفوف (عام)</option>
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </select>
+                        <select id="rankGroup" class="modern-input">
+                            <option value="all">كل المجاميع</option>
+                            <option value="السبت">السبت</option>
+                            <option value="الأحد">الأحد</option>
+                            <option value="الإثنين">الإثنين</option>
+                            <option value="الثلاثاء">الثلاثاء</option>
+                            <option value="الأربعاء">الأربعاء</option>
+                            <option value="الخميس">الخميس</option>
+                            <option value="الجمعة">الجمعة</option>
+                        </select>
+                    </div>
+                    <button onclick="fetchHonorRoll()" class="btn-hero w-full py-3 text-xl bg-yellow-500 text-black border-black border-4 shadow-[4px_4px_0px_#000] hover:bg-yellow-400">
+                        GENERATE RANKINGS <i class="fas fa-trophy ml-2"></i>
+                    </button>
+                </div>
+
+                <div class="card-comic overflow-x-auto">
+                    <table class="w-full text-left whitespace-nowrap">
+                        <thead class="bg-black text-white marvel-font">
+                            <tr>
+                                <th class="p-4">RANK</th>
+                                <th class="p-4">CODE & NAME</th>
+                                <th class="p-4">CLASS & GROUP</th>
+                                <th class="p-4 text-center">TOTAL PTS</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rankingsTableBody" class="font-bold text-sm"></tbody>
+                    </table>
+                </div>
             </div>
+
         </div>
 
         <!-- قسم الفحص QR -->
@@ -365,13 +459,11 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div class="p-4 border-2 border-black">
                         <h4 class="font-black border-b-2 border-black mb-2">VIDEOS</h4>
-                        <p class="text-sm font-bold">Use Unlisted Youtube links to keep your missions exclusive to your
-                            heroes.</p>
+                        <p class="text-sm font-bold">Use Unlisted Youtube links to keep your missions exclusive to your heroes.</p>
                     </div>
                     <div class="p-4 border-2 border-black">
                         <h4 class="font-black border-b-2 border-black mb-2">QR SYSTEM</h4>
-                        <p class="text-sm font-bold">Every hero gets an encrypted QR code. Scan it here to confirm their
-                            score is legit.</p>
+                        <p class="text-sm font-bold">Every hero gets an encrypted QR code. Scan it here to confirm their score is legit.</p>
                     </div>
                 </div>
             </div>
@@ -444,7 +536,9 @@
 
             if (tabName === 'videos') loadVideos();
             if (tabName === 'quizzes') loadQuizzes();
-            if (tabName === 'results') loadResults();
+            if (tabName === 'results') {
+                toggleResultView('archives');
+            }
         }
 
         // --- إدارة الفيديوهات ---
@@ -583,37 +677,88 @@
         }
 
         // --- النتائج والفحص ولوحة الشرف ---
+        
+        function toggleResultView(viewName) {
+            document.getElementById('view-archives').classList.add('hidden');
+            document.getElementById('view-rankings').classList.add('hidden');
+            
+            document.getElementById('tab-archives').classList.remove('active');
+            document.getElementById('tab-rankings').classList.remove('active');
+
+            document.getElementById(`view-${viewName}`).classList.remove('hidden');
+            document.getElementById(`tab-${viewName}`).classList.add('active');
+
+            if(viewName === 'archives') loadResults();
+            if(viewName === 'rankings') fetchHonorRoll();
+        }
+
         let allResults = [];
         async function loadResults() {
-            document.getElementById('resultsTableBody').innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">LOADING DATA...</td></tr>';
+            document.getElementById('resultsTableBody').innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">LOADING DATA...</td></tr>';
             try {
-                allResults = await supabaseRequest('GET', 'Jamal_results', '?order=id.desc');
+                allResults = await supabaseRequest('GET', 'Jamal_results', '?select=*&order=id.desc');
                 renderResults(allResults);
-            } catch(e){}
+            } catch(e) {
+                console.error(e);
+            }
         }
 
         function renderResults(data) {
             const tb = document.getElementById('resultsTableBody');
-            if(!data.length) return tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">NO RECORDS FOUND</td></tr>';
-            tb.innerHTML = data.map(r => `
+            if(!data.length) return tb.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500">NO RECORDS FOUND</td></tr>';
+            
+            tb.innerHTML = data.map(r => {
+                const phoneText = r.phone ? `<br><span class="text-xs text-gray-500 font-mono">${r.phone}</span>` : '';
+                const classText = r.class_name || 'غير محدد';
+                const groupText = r.group_name ? `<br><span class="text-xs text-gray-500">${r.group_name}</span>` : '';
+
+                return `
                 <tr class="border-b border-gray-200 hover:bg-gray-100 transition">
-                    <td class="p-4 font-mono font-bold">${r.student_code}</td>
-                    <td class="p-4 uppercase">${r.student_name}</td>
+                    <td class="p-4 font-mono font-black text-red-600">${r.student_code}</td>
+                    <td class="p-4 uppercase">${r.student_name} ${phoneText}</td>
+                    <td class="p-4">${classText} ${groupText}</td>
                     <td class="p-4"><span class="bg-red-600 text-white px-2 py-1 font-black">${r.score}/${r.total_questions}</span></td>
-                </tr>`).join('');
+                </tr>`;
+            }).join('');
         }
 
         function filterResults() {
-            const term = document.getElementById('searchResultCode').value.toLowerCase();
-            renderResults(allResults.filter(r => r.student_code.toLowerCase().includes(term)));
+            const term = document.getElementById('searchAny').value.toLowerCase();
+            const cls = document.getElementById('filterClass').value;
+            const grp = document.getElementById('filterGroup').value;
+
+            const filtered = allResults.filter(r => {
+                // 1. Search filter
+                const nameStr = (r.student_name || '').toLowerCase();
+                const codeStr = (r.student_code || '').toLowerCase();
+                const phoneStr = (r.phone || '').toLowerCase();
+                const matchSearch = nameStr.includes(term) || codeStr.includes(term) || phoneStr.includes(term);
+
+                // 2. Class filter
+                const matchClass = (cls === 'all') || (r.class_name === cls);
+
+                // 3. Group filter
+                const matchGroup = (grp === 'all') || (r.group_name === grp);
+
+                return matchSearch && matchClass && matchGroup;
+            });
+
+            renderResults(filtered);
         }
 
         async function fetchHonorRoll() {
-            const tb = document.getElementById('resultsTableBody');
-            tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center font-bold text-blue-600">COMPILING RANKINGS... <i class="fas fa-spinner fa-spin"></i></td></tr>';
+            const tb = document.getElementById('rankingsTableBody');
+            tb.innerHTML = '<tr><td colspan="4" class="p-4 text-center font-bold text-blue-600">COMPILING RANKINGS... <i class="fas fa-spinner fa-spin"></i></td></tr>';
             
             try {
-                const results = await supabaseRequest('GET', 'Jamal_results', '');
+                const cls = document.getElementById('rankClass').value;
+                const grp = document.getElementById('rankGroup').value;
+
+                let query = '?select=*';
+                if(cls !== 'all') query += `&class_name=eq.${encodeURIComponent(cls)}`;
+                if(grp !== 'all') query += `&group_name=eq.${encodeURIComponent(grp)}`;
+
+                const results = await supabaseRequest('GET', 'Jamal_results', query);
                 const studentMap = {};
                 
                 // تجميع درجات الطلاب
@@ -622,6 +767,8 @@
                         studentMap[r.student_code] = {
                             name: r.student_name,
                             code: r.student_code,
+                            className: r.class_name || 'غير محدد',
+                            groupName: r.group_name || 'غير محدد',
                             totalScore: 0
                         };
                     }
@@ -632,7 +779,7 @@
                 arr.sort((a, b) => b.totalScore - a.totalScore); // ترتيب تنازلي
 
                 if (arr.length === 0) {
-                    tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500 font-bold">NO DATA FOR RANKING</td></tr>';
+                    tb.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-gray-500 font-bold">NO DATA FOR RANKING</td></tr>';
                     return;
                 }
 
@@ -640,21 +787,23 @@
                     let styleClass = "border-b border-gray-200";
                     let rankIcon = `#${i+1}`;
                     
-                    if(i === 0) { styleClass += " bg-yellow-100 text-yellow-900"; rankIcon = '<i class="fas fa-trophy text-yellow-500 text-xl"></i>'; }
-                    else if(i === 1) { styleClass += " bg-gray-100"; rankIcon = '<i class="fas fa-medal text-gray-400 text-xl"></i>'; }
-                    else if(i === 2) { styleClass += " bg-orange-50"; rankIcon = '<i class="fas fa-medal text-orange-500 text-xl"></i>'; }
+                    if(i === 0) { styleClass += " bg-yellow-100 text-yellow-900"; rankIcon = '<i class="fas fa-trophy text-yellow-500 text-2xl"></i>'; }
+                    else if(i === 1) { styleClass += " bg-gray-100"; rankIcon = '<i class="fas fa-medal text-gray-400 text-2xl"></i>'; }
+                    else if(i === 2) { styleClass += " bg-orange-50"; rankIcon = '<i class="fas fa-medal text-orange-500 text-2xl"></i>'; }
 
                     return `
-                        <tr class="${styleClass}">
-                            <td class="p-4 font-mono font-bold">${rankIcon} - ${s.code}</td>
-                            <td class="p-4 uppercase font-black">${s.name}</td>
-                            <td class="p-4"><span class="bg-yellow-400 text-black border-2 border-black px-3 py-1 font-black">${s.totalScore} PTS</span></td>
+                        <tr class="${styleClass} hover:bg-gray-100 transition">
+                            <td class="p-4 font-mono font-black text-center">${rankIcon}</td>
+                            <td class="p-4 uppercase font-black">${s.name} <br><span class="text-xs text-red-600 font-mono">${s.code}</span></td>
+                            <td class="p-4 text-gray-600">${s.className} <br><span class="text-xs">${s.groupName}</span></td>
+                            <td class="p-4 text-center"><span class="bg-yellow-400 text-black border-2 border-black px-4 py-2 font-black text-lg">${s.totalScore}</span></td>
                         </tr>
                     `;
                 }).join('');
 
             } catch(e) {
-                tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-600 font-bold">ERROR COMPILING RANKS</td></tr>';
+                console.error(e);
+                tb.innerHTML = '<tr><td colspan="4" class="p-4 text-center text-red-600 font-bold">ERROR COMPILING RANKS</td></tr>';
             }
         }
 
