@@ -245,10 +245,18 @@
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <input type="text" id="vidTitle" placeholder="MISSION TITLE" class="modern-input">
                     <select id="vidClass" class="modern-input">
-                        <option value="الصف الثالث الثانوي">3rd Secondary</option>
-                        <option value="الصف الثاني الثانوي">2nd Secondary</option>
+                        <optgroup label="المرحلة الإعدادية">
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الثانوية">
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </optgroup>
                     </select>
-                    <input type="text" id="vidUrl" placeholder="YOUTUBE URL" class="modern-input">
+                    <input type="text" id="vidUrl" placeholder="YOUTUBE URL" class="modern-input" dir="ltr">
                 </div>
                 <button onclick="addVideo()" id="addVidBtn" class="btn-hero w-full mt-4 text-xl">UPLOAD MISSION</button>
             </div>
@@ -262,9 +270,18 @@
                 <div class="flex gap-4">
                     <input type="text" id="newQuizName" placeholder="EXAM NAME" class="modern-input">
                     <select id="newQuizClass" class="modern-input">
-                        <option value="الصف الثالث الثانوي">3rd Secondary</option>
+                        <optgroup label="المرحلة الإعدادية">
+                            <option value="الصف الأول الإعدادي">الصف الأول الإعدادي</option>
+                            <option value="الصف الثاني الإعدادي">الصف الثاني الإعدادي</option>
+                            <option value="الصف الثالث الإعدادي">الصف الثالث الإعدادي</option>
+                        </optgroup>
+                        <optgroup label="المرحلة الثانوية">
+                            <option value="الصف الأول الثانوي">الصف الأول الثانوي</option>
+                            <option value="الصف الثاني الثانوي">الصف الثاني الثانوي</option>
+                            <option value="الصف الثالث الثانوي">الصف الثالث الثانوي</option>
+                        </optgroup>
                     </select>
-                    <button onclick="createQuiz()" class="btn-hero px-8">CREATE</button>
+                    <button onclick="createQuiz()" id="createQuizBtn" class="btn-hero px-8">CREATE</button>
                 </div>
             </div>
             <div id="quizListTableBody" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
@@ -328,7 +345,7 @@
         <div id="scanner-section" class="tab-content hidden flex flex-col items-center">
             <div class="card-comic p-6 w-full max-w-xl text-center">
                 <h3 class="marvel-font text-3xl mb-4">Identity Scanner</h3>
-                <div id="reader" class="bg-black rounded-lg overflow-hidden border-4 border-black mb-6"></div>
+                <div id="reader" class="bg-black rounded-lg overflow-hidden border-4 border-black mb-6 w-full aspect-square object-cover"></div>
                 <div id="scanResult" class="hidden space-y-4">
                     <div class="bg-green-100 border-4 border-green-600 p-4 text-green-900">
                         <h4 class="marvel-font text-2xl">HERO VERIFIED</h4>
@@ -367,7 +384,8 @@
         const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxYmJkbnNnbGN5aXZnZ210a29lIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc5ODc3NTMsImV4cCI6MjA5MzU2Mzc1M30.dThJWpMWOs6weXKwm7rUleIzqAfuK_Q5oRW27Gr4nKw";
         const QR_SECRET_KEY = "JamalAcademy_Secret_2026";
 
-        let html5QrCode, currentEditingQuizId = null;
+        let html5QrCode;
+        let currentEditingQuizId = null;
 
         async function supabaseRequest(method, table, query = "", body = null) {
             const url = `${SUPABASE_URL}/rest/v1/${table}${query}`;
@@ -414,16 +432,22 @@
             // تحديث العناوين والنشاط
             document.getElementById('tab-title').innerText = tabName.replace('-', ' ').toUpperCase();
             document.querySelectorAll(".nav-item").forEach(item => item.classList.remove('active'));
-
-            if (tabName === 'scanner') initScanner();
-            else if (html5QrCode) html5QrCode.stop();
+            
+            // إيقاف الكاميرا في حال الانتقال لتاب أخرى
+            if (tabName === 'scanner') {
+                initScanner();
+            } else if (html5QrCode && html5QrCode.getState() === 2) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('reader').innerHTML = '';
+                }).catch(err => console.log("Camera stop error: ", err));
+            }
 
             if (tabName === 'videos') loadVideos();
             if (tabName === 'quizzes') loadQuizzes();
             if (tabName === 'results') loadResults();
         }
 
-        // --- إدارة الفيديوهات (استخدام جداول Jamal الأصلية لضمان العمل) ---
+        // --- إدارة الفيديوهات ---
         async function addVideo() {
             const btn = document.getElementById('addVidBtn');
             btn.innerText = "UPLOADING...";
@@ -433,42 +457,81 @@
                     class_name: document.getElementById('vidClass').value,
                     youtube_url: document.getElementById('vidUrl').value
                 });
+                document.getElementById('vidTitle').value = '';
+                document.getElementById('vidUrl').value = '';
                 loadVideos();
-            } catch (e) { alert("ERROR"); }
+            } catch (e) { alert("ERROR UPLOADING"); }
             btn.innerText = "UPLOAD MISSION";
         }
 
         async function loadVideos() {
             const container = document.getElementById('videosList');
-            container.innerHTML = 'LOADING...';
-            const videos = await supabaseRequest('GET', 'Jamal_videos', '?order=id.desc');
-            container.innerHTML = videos.map(v => `
-                <div class="card-comic p-4 flex justify-between items-center">
-                    <div><h4 class="font-black">${v.title}</h4><span class="text-xs bg-black text-white px-2">${v.class_name}</span></div>
-                    <button onclick="deleteVideo(${v.id})" class="text-red-600"><i class="fas fa-trash"></i></button>
-                </div>`).join('');
+            container.innerHTML = '<p class="p-4 text-gray-500 font-bold">LOADING...</p>';
+            try {
+                const videos = await supabaseRequest('GET', 'Jamal_videos', '?order=id.desc');
+                container.innerHTML = videos.map(v => `
+                    <div class="card-comic p-4 flex justify-between items-center">
+                        <div><h4 class="font-black">${v.title}</h4><span class="text-xs bg-black text-white px-2 py-1 mt-1 inline-block">${v.class_name}</span></div>
+                        <button onclick="deleteVideo(${v.id})" class="text-red-600 bg-red-100 p-2 border-2 border-red-600 transition hover:bg-red-600 hover:text-white"><i class="fas fa-trash"></i></button>
+                    </div>`).join('');
+            } catch(e){}
         }
 
-        async function deleteVideo(id) { if (confirm("ABORT MISSION?")) { await supabaseRequest('DELETE', 'Jamal_videos', `?id=eq.${id}`); loadVideos(); } }
+        async function deleteVideo(id) { 
+            if (confirm("ABORT MISSION (DELETE VIDEO)?")) { 
+                await supabaseRequest('DELETE', 'Jamal_videos', `?id=eq.${id}`); 
+                loadVideos(); 
+            } 
+        }
 
         // --- إدارة الامتحانات ---
-        async function loadQuizzes() {
-            const container = document.getElementById('quizListTableBody');
-            const quizzes = await supabaseRequest('GET', 'Jamal_quizzes', '?order=id.desc');
-            container.innerHTML = quizzes.map(q => `
-                <div class="card-comic p-4">
-                    <div class="flex justify-between mb-4">
-                        <h4 class="font-black">${q.quiz_name}</h4>
-                        <input type="checkbox" ${q.is_active ? 'checked' : ''} onchange="toggleQuiz(${q.id}, this.checked)" class="w-6 h-6">
-                    </div>
-                    <div class="flex gap-2">
-                        <button onclick="openQuizDetails(${q.id}, '${q.quiz_name}')" class="flex-1 bg-black text-white py-2 font-bold">QUESTIONS</button>
-                        <button onclick="deleteQuiz(${q.id})" class="text-red-600 p-2"><i class="fas fa-trash"></i></button>
-                    </div>
-                </div>`).join('');
+        async function createQuiz() {
+            const name = document.getElementById('newQuizName').value;
+            const cls = document.getElementById('newQuizClass').value;
+            const btn = document.getElementById('createQuizBtn');
+            if (!name) return alert("PLEASE ENTER EXAM NAME");
+            
+            btn.innerText = "...";
+            try { 
+                await supabaseRequest('POST', 'Jamal_quizzes', '', { quiz_name: name, class_name: cls }); 
+                document.getElementById('newQuizName').value = ''; 
+                loadQuizzes(); 
+            } catch (e) { alert("ERROR CREATING EXAM"); }
+            btn.innerText = "CREATE";
         }
 
-        async function toggleQuiz(id, status) { await supabaseRequest('PATCH', 'Jamal_quizzes', `?id=eq.${id}`, { is_active: status }); }
+        async function loadQuizzes() {
+            const container = document.getElementById('quizListTableBody');
+            container.innerHTML = '<p class="p-4 text-gray-500 font-bold">LOADING...</p>';
+            try {
+                const quizzes = await supabaseRequest('GET', 'Jamal_quizzes', '?order=id.desc');
+                container.innerHTML = quizzes.map(q => `
+                    <div class="card-comic p-4">
+                        <div class="flex justify-between items-center mb-4 border-b-2 border-gray-200 pb-2">
+                            <div>
+                                <h4 class="font-black text-lg">${q.quiz_name}</h4>
+                                <span class="text-xs text-gray-500 font-bold">${q.class_name}</span>
+                            </div>
+                            <input type="checkbox" ${q.is_active ? 'checked' : ''} onchange="toggleQuiz(${q.id}, this.checked)" class="w-6 h-6 accent-red-600 cursor-pointer">
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="openQuizDetails(${q.id}, '${q.quiz_name}')" class="flex-1 bg-black text-white py-2 font-bold hover:bg-gray-800 transition">QUESTIONS</button>
+                            <button onclick="deleteQuiz(${q.id})" class="text-red-600 p-2 border-2 border-red-600 hover:bg-red-600 hover:text-white transition"><i class="fas fa-trash"></i></button>
+                        </div>
+                    </div>`).join('');
+            } catch(e){}
+        }
+
+        async function toggleQuiz(id, status) { 
+            await supabaseRequest('PATCH', 'Jamal_quizzes', `?id=eq.${id}`, { is_active: status }); 
+        }
+
+        async function deleteQuiz(id) { 
+            if (confirm("DELETE THIS EXAM AND ALL ITS QUESTIONS?")) { 
+                await supabaseRequest('DELETE', 'Jamal_quizzes', `?id=eq.${id}`); 
+                loadQuizzes(); 
+            } 
+        }
 
         function openQuizDetails(id, name) {
             currentEditingQuizId = id;
@@ -479,38 +542,64 @@
         }
 
         async function loadQuestions() {
-            const qs = await supabaseRequest('GET', 'Jamal_questions', `?quiz_id=eq.${currentEditingQuizId}`);
-            document.getElementById('quizQuestionsContainer').innerHTML = qs.map((q, i) => `
-                <div class="bg-white border-2 border-black p-3 flex justify-between items-center">
-                    <span class="font-bold">${i + 1}. ${q.question_text}</span>
-                    <button onclick="deleteQuestion(${q.id})" class="text-red-600"><i class="fas fa-trash"></i></button>
-                </div>`).join('');
+            const container = document.getElementById('quizQuestionsContainer');
+            container.innerHTML = '<p class="font-bold text-gray-500">LOADING...</p>';
+            try {
+                const qs = await supabaseRequest('GET', 'Jamal_questions', `?quiz_id=eq.${currentEditingQuizId}`);
+                container.innerHTML = qs.map((q, i) => `
+                    <div class="bg-white border-2 border-black p-3 flex justify-between items-center">
+                        <span class="font-bold truncate w-3/4">${i + 1}. ${q.question_text}</span>
+                        <button onclick="deleteQuestion(${q.id})" class="text-red-600 p-1 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                    </div>`).join('');
+            } catch(e){}
         }
 
         async function addQuestion() {
-            await supabaseRequest('POST', 'Jamal_questions', '', {
+            const data = {
                 quiz_id: currentEditingQuizId,
                 question_text: document.getElementById('qText').value,
-                choice_a: document.getElementById('qA').value, choice_b: document.getElementById('qB').value,
-                choice_c: document.getElementById('qC').value, choice_d: document.getElementById('qD').value,
+                choice_a: document.getElementById('qA').value, 
+                choice_b: document.getElementById('qB').value,
+                choice_c: document.getElementById('qC').value, 
+                choice_d: document.getElementById('qD').value,
                 correct_answer: document.getElementById('qCorrect').value
-            });
-            loadQuestions();
+            };
+            if(!data.question_text || !data.choice_a) return alert("PLEASE FILL ALL FIELDS");
+            
+            try {
+                await supabaseRequest('POST', 'Jamal_questions', '', data);
+                document.getElementById('qText').value = '';
+                document.getElementById('qA').value = ''; document.getElementById('qB').value = '';
+                document.getElementById('qC').value = ''; document.getElementById('qD').value = '';
+                loadQuestions();
+            } catch(e){ alert("ERROR ADDING QUESTION"); }
         }
 
-        // --- النتائج والفحص ---
+        async function deleteQuestion(id) {
+            if(confirm("DELETE THIS QUESTION?")){
+                await supabaseRequest('DELETE', 'Jamal_questions', `?id=eq.${id}`);
+                loadQuestions();
+            }
+        }
+
+        // --- النتائج والفحص ولوحة الشرف ---
         let allResults = [];
         async function loadResults() {
-            allResults = await supabaseRequest('GET', 'Jamal_results', '?order=id.desc');
-            renderResults(allResults);
+            document.getElementById('resultsTableBody').innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">LOADING DATA...</td></tr>';
+            try {
+                allResults = await supabaseRequest('GET', 'Jamal_results', '?order=id.desc');
+                renderResults(allResults);
+            } catch(e){}
         }
 
         function renderResults(data) {
-            document.getElementById('resultsTableBody').innerHTML = data.map(r => `
-                <tr class="border-b border-gray-200">
-                    <td class="p-4 font-mono">${r.student_code}</td>
+            const tb = document.getElementById('resultsTableBody');
+            if(!data.length) return tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500">NO RECORDS FOUND</td></tr>';
+            tb.innerHTML = data.map(r => `
+                <tr class="border-b border-gray-200 hover:bg-gray-100 transition">
+                    <td class="p-4 font-mono font-bold">${r.student_code}</td>
                     <td class="p-4 uppercase">${r.student_name}</td>
-                    <td class="p-4"><span class="bg-red-600 text-white px-2 py-1">${r.score}/${r.total_questions}</span></td>
+                    <td class="p-4"><span class="bg-red-600 text-white px-2 py-1 font-black">${r.score}/${r.total_questions}</span></td>
                 </tr>`).join('');
         }
 
@@ -519,24 +608,87 @@
             renderResults(allResults.filter(r => r.student_code.toLowerCase().includes(term)));
         }
 
+        async function fetchHonorRoll() {
+            const tb = document.getElementById('resultsTableBody');
+            tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center font-bold text-blue-600">COMPILING RANKINGS... <i class="fas fa-spinner fa-spin"></i></td></tr>';
+            
+            try {
+                const results = await supabaseRequest('GET', 'Jamal_results', '');
+                const studentMap = {};
+                
+                // تجميع درجات الطلاب
+                results.forEach(r => {
+                    if (!studentMap[r.student_code]) {
+                        studentMap[r.student_code] = {
+                            name: r.student_name,
+                            code: r.student_code,
+                            totalScore: 0
+                        };
+                    }
+                    studentMap[r.student_code].totalScore += parseInt(r.score) || 0;
+                });
+
+                const arr = Object.values(studentMap);
+                arr.sort((a, b) => b.totalScore - a.totalScore); // ترتيب تنازلي
+
+                if (arr.length === 0) {
+                    tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-gray-500 font-bold">NO DATA FOR RANKING</td></tr>';
+                    return;
+                }
+
+                tb.innerHTML = arr.map((s, i) => {
+                    let styleClass = "border-b border-gray-200";
+                    let rankIcon = `#${i+1}`;
+                    
+                    if(i === 0) { styleClass += " bg-yellow-100 text-yellow-900"; rankIcon = '<i class="fas fa-trophy text-yellow-500 text-xl"></i>'; }
+                    else if(i === 1) { styleClass += " bg-gray-100"; rankIcon = '<i class="fas fa-medal text-gray-400 text-xl"></i>'; }
+                    else if(i === 2) { styleClass += " bg-orange-50"; rankIcon = '<i class="fas fa-medal text-orange-500 text-xl"></i>'; }
+
+                    return `
+                        <tr class="${styleClass}">
+                            <td class="p-4 font-mono font-bold">${rankIcon} - ${s.code}</td>
+                            <td class="p-4 uppercase font-black">${s.name}</td>
+                            <td class="p-4"><span class="bg-yellow-400 text-black border-2 border-black px-3 py-1 font-black">${s.totalScore} PTS</span></td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch(e) {
+                tb.innerHTML = '<tr><td colspan="3" class="p-4 text-center text-red-600 font-bold">ERROR COMPILING RANKS</td></tr>';
+            }
+        }
+
+        // --- نظام الـ QR Scanner ---
         function initScanner() {
             document.getElementById('scanResult').classList.add('hidden');
             document.getElementById('reader').classList.remove('hidden');
+            
             if (!html5QrCode) html5QrCode = new Html5Qrcode("reader");
-            html5QrCode.start({ facingMode: "environment" }, { fps: 10, qrbox: 250 }, onScanSuccess);
+            if (html5QrCode.getState() === 2) return; // الكاميرا تعمل بالفعل
+
+            html5QrCode.start(
+                { facingMode: "environment" }, 
+                { fps: 10, qrbox: { width: 250, height: 250 }, aspectRatio: 1.0 }, 
+                onScanSuccess,
+                (errorMessage) => { /* Ignore periodic scanning errors */ }
+            ).catch(err => {
+                document.getElementById('reader').innerHTML = '<p class="text-red-600 font-bold p-4 text-center mt-10 border-2 border-red-600 bg-red-100">❌ PLEASE ALLOW CAMERA ACCESS.</p>';
+            });
         }
 
         function onScanSuccess(decodedText) {
             try {
                 const bytes = CryptoJS.AES.decrypt(decodedText, QR_SECRET_KEY);
                 const data = JSON.parse(bytes.toString(CryptoJS.enc.Utf8));
-                html5QrCode.stop();
-                document.getElementById('reader').classList.add('hidden');
-                document.getElementById('scanResult').classList.remove('hidden');
-                document.getElementById('resName').innerText = data.name;
-                document.getElementById('resCode').innerText = data.code;
-                document.getElementById('resScore').innerText = data.score;
-            } catch (e) { alert("INVALID DATA"); }
+                
+                html5QrCode.stop().then(() => {
+                    document.getElementById('reader').classList.add('hidden');
+                    document.getElementById('scanResult').classList.remove('hidden');
+                    document.getElementById('resName').innerText = data.name;
+                    document.getElementById('resCode').innerText = data.code;
+                    document.getElementById('resScore').innerText = data.score + " PTS";
+                });
+            } catch (e) { alert("INVALID HERO IDENTITY (QR CODE)"); }
         }
 
         function resetScanner() { initScanner(); }
